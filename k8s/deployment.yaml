@@ -24,7 +24,7 @@ spec:
         emptyDir: {}
       containers:
       - name: stt-contact-ui
-        image: ghcr.io/staillanibm/stt-contact-ui:latest
+        image: ghcr.io/staillanibm/stt-contact-ui:v1.1.0
         ports:
         - containerPort: 8080
           name: http

@@ -1,7 +1,9 @@
 import { useAuth } from '../auth/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export const UserProfile = () => {
   const { user, logout, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   if (!isAuthenticated || !user) {
     return null;
@@ -26,12 +28,20 @@ export const UserProfile = () => {
           <span className="user-email">{userEmail}</span>
         )}
       </div>
-      <button 
-        onClick={handleLogout}
-        className="logout-button"
-      >
-        Sign Out
-      </button>
+      <div className="user-actions">
+        <button 
+          onClick={() => navigate('/tokens')}
+          className="tokens-button"
+        >
+          🔑 Tokens
+        </button>
+        <button 
+          onClick={handleLogout}
+          className="logout-button"
+        >
+          Sign Out
+        </button>
+      </div>
     </div>
   );
 };

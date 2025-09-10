@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Contact } from './types/contact';
 import { ContactList } from './components/ContactList';
 import { ContactForm } from './components/ContactForm';
 import { ContactDetail } from './components/ContactDetail';
 import { LoginScreen } from './components/LoginScreen';
 import { UserProfile } from './components/UserProfile';
-import { CallbackPage } from './pages/CallbackPage';
+import TokenInfo from './pages/TokenInfo';
 import { contactApi } from './services/contactApi';
 import { useAuth } from './auth/AuthContext';
 import './App.css';
@@ -60,59 +61,78 @@ function App() {
     setSelectedContact(null);
   };
 
-  // Handle callback route
-  if (window.location.pathname === '/callback') {
-    return <CallbackPage />;
-  }
-
-  // Show loading screen while checking authentication
-  if (isLoading) {
-    return (
-      <div className="app">
-        <div className="loading">Loading...</div>
-      </div>
-    );
-  }
-
-  // Show login screen if not authenticated
-  if (!isAuthenticated) {
-    return <LoginScreen />;
-  }
-
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>Contact Management System</h1>
-        <UserProfile />
-      </header>
-
-      <main className="app-main">
-        {view === 'list' && (
-          <ContactList
-            onSelectContact={handleSelectContact}
-            onCreateContact={handleCreateContact}
-            refreshTrigger={refreshTrigger}
-          />
+    <Router>
+      <Routes>
+        {/* Callback route - handled by AuthProvider */}
+        
+        {/* Loading state */}
+        {isLoading && (
+          <Route path="*" element={
+            <div className="app">
+              <div className="loading">Loading...</div>
+            </div>
+          } />
         )}
-
-        {view === 'form' && (
-          <ContactForm
-            contact={editingContact || undefined}
-            onSave={handleSaveContact}
-            onCancel={handleCancel}
-          />
+        
+        {/* Not authenticated - show login */}
+        {!isAuthenticated && !isLoading && (
+          <Route path="*" element={<LoginScreen />} />
         )}
-
-        {view === 'detail' && selectedContact && (
-          <ContactDetail
-            contactId={selectedContact.id!}
-            onEdit={handleEditContact}
-            onDelete={handleDeleteContact}
-            onClose={handleCancel}
-          />
+        
+        {/* Authenticated routes */}
+        {isAuthenticated && (
+          <>
+            <Route path="/tokens" element={
+              <div className="app">
+                <header className="app-header">
+                  <h1>Contact Management System</h1>
+                  <UserProfile />
+                </header>
+                <main className="app-main">
+                  <TokenInfo />
+                </main>
+              </div>
+            } />
+            
+            <Route path="/" element={
+              <div className="app">
+                <header className="app-header">
+                  <h1>Contact Management System</h1>
+                  <UserProfile />
+                </header>
+                <main className="app-main">
+                  {view === 'list' && (
+                    <ContactList
+                      onSelectContact={handleSelectContact}
+                      onCreateContact={handleCreateContact}
+                      refreshTrigger={refreshTrigger}
+                    />
+                  )}
+                  {view === 'form' && (
+                    <ContactForm
+                      contact={editingContact || undefined}
+                      onSave={handleSaveContact}
+                      onCancel={handleCancel}
+                    />
+                  )}
+                  {view === 'detail' && selectedContact && (
+                    <ContactDetail
+                      contactId={selectedContact.id!}
+                      onEdit={handleEditContact}
+                      onDelete={handleDeleteContact}
+                      onClose={handleCancel}
+                    />
+                  )}
+                </main>
+              </div>
+            } />
+            
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </>
         )}
-      </main>
-    </div>
+      </Routes>
+    </Router>
   );
 }
 

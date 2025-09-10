@@ -35,8 +35,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             sessionStorage.setItem(callbackKey, 'true');
             const callbackUser = await userManager.signinRedirectCallback();
             setUser(callbackUser);
+            console.log('✅ Callback processed, user:', callbackUser.profile?.preferred_username);
             // Redirect to main app after successful login
             window.history.replaceState({}, document.title, '/');
+            setIsLoading(false);
             return;
           }
         }

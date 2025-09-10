@@ -5,7 +5,7 @@ import fs from 'fs'
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: '0.0.0.0',
+    host: process.env.VITE_USE_LOCAL_HTTPS === 'true' ? 'contact.local' : '0.0.0.0',
     port: 5173,
     // HTTPS only for local development
     ...(process.env.NODE_ENV === 'development' && process.env.VITE_USE_LOCAL_HTTPS === 'true' && {
