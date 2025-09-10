@@ -1,0 +1,14 @@
+node_modules
+npm-debug.log
+dist
+.git
+.env*
+README.md
+Dockerfile
+k8s/
+*.md
+.vscode
+.DS_Store
+contact.local*.pem
+coverage/
+.nyc_output

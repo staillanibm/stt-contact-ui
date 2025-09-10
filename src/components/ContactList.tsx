@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Contact, ContactsQuery } from '../types/contact';
 import { contactApi } from '../services/contactApi';
+import { useAuth } from '../auth/AuthContext';
 
 interface ContactListProps {
   onSelectContact: (contact: Contact) => void;
@@ -9,6 +10,7 @@ interface ContactListProps {
 }
 
 export const ContactList = ({ onSelectContact, onCreateContact, refreshTrigger }: ContactListProps) => {
+  const { isAuthenticated, getAccessToken } = useAuth();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,8 +45,14 @@ export const ContactList = ({ onSelectContact, onCreateContact, refreshTrigger }
   };
 
   useEffect(() => {
-    loadContacts(true);
-  }, [query.firstName, query.lastName, query.sortBy, query.sortOrder, refreshTrigger]);
+    const token = getAccessToken();
+    if (isAuthenticated && token) {
+      // Small delay to ensure token is properly set in the API service
+      setTimeout(() => {
+        loadContacts(true);
+      }, 10);
+    }
+  }, [isAuthenticated, query.firstName, query.lastName, query.sortBy, query.sortOrder, refreshTrigger]);
 
   const handleSearch = (field: 'firstName' | 'lastName', value: string) => {
     setQuery(prev => ({ ...prev, [field]: value || undefined, offset: 0 }));

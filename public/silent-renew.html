@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Silent Renew</title>
+</head>
+<body>
+    <script type="module">
+        import { UserManager } from 'https://unpkg.com/oidc-client-ts@3.3.0/dist/index.js';
+        
+        const oidcConfig = {
+            authority: 'https://keycloak.staging.e-auth.cloud/realms/sttlab',
+            client_id: '47283985-2eed-4484-bc28-dc03f0e446fe',
+            redirect_uri: 'https://contact.local:5173/callback',
+            post_logout_redirect_uri: 'https://contact.local:5173',
+            response_type: 'code',
+            scope: 'openid profile email',
+            response_mode: 'query',
+            silent_redirect_uri: 'https://contact.local:5173/silent-renew',
+            automaticSilentRenew: true,
+            loadUserInfo: true,
+            monitorSession: true,
+            accessTokenExpiringNotificationTimeInSeconds: 60
+        };
+        
+        new UserManager(oidcConfig).signinSilentCallback()
+            .catch(function (e) {
+                console.error('Silent renew error:', e);
+            });
+    </script>
+</body>
+</html>

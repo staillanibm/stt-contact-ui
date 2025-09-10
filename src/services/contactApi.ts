@@ -3,10 +3,10 @@ import { Contact, PaginatedContacts, ContactsQuery } from '../types/contact';
 const API_BASE_URL = 'https://apigw-be-apigateway.apps.itz-zmhpfy.infra01-lb.fra02.techzone.ibm.com/gateway/ContactManagementAPI/1.0.0';
 
 class ContactAPI {
-  private apiKey: string | null = null;
+  private accessToken: string | null = null;
 
-  setApiKey(apiKey: string) {
-    this.apiKey = apiKey;
+  setAccessToken(token: string | null) {
+    this.accessToken = token;
   }
 
   private getHeaders(): HeadersInit {
@@ -14,8 +14,8 @@ class ContactAPI {
       'Content-Type': 'application/json',
     };
     
-    if (this.apiKey) {
-      headers['x-gateway-apikey'] = this.apiKey;
+    if (this.accessToken) {
+      headers['Authorization'] = `Bearer ${this.accessToken}`;
     }
     
     return headers;
