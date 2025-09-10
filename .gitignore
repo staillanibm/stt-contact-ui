@@ -132,3 +132,9 @@ Thumbs.db
 # Build artifacts
 *.tgz
 *.tar.gz
+
+# SSL certificates for local development
+*.pem
+*.key
+*.crt
+*.cert
